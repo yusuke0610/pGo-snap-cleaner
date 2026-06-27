@@ -4,8 +4,6 @@
 package detect
 
 import (
-	"math"
-
 	"github.com/wadayusuke/photo-clean/internal/imagemeta"
 )
 
@@ -26,14 +24,23 @@ type Detector interface {
 }
 
 // PokemonGO の目標アスペクト比: スナップショットは 690×1227(1×) と
-// 1380×2454(2×) で、どちらも厳密に 230:409。よって真の比率は数学的に厳密(差 0)。
-// 許容差は 16:9(1.77778, 約 0.00048 差) との隙間より小さく保つこと。さもないと
-// EXIF 無しの 16:9 JPEG が誤爆する。0.0003 は実スナップショットに十分な余裕を
-// 残しつつ 16:9 を確実に除外する。
+// 1380×2454(2×) で、どちらも厳密に 230:409。比率は数学的に厳密なので、
+// 浮動小数の許容差ではなく整数で厳密一致を見る（後述の matchesRatio）。
+//
+// 浮動小数の許容差は危険: 実ライブラリには 1707×960(569:320, 1.778125) という
+// 別物の画像があり、230:409(1.778261)との差は 0.000136 しかない。許容差を
+// これより小さくしようとすると実用上ほぼゼロになり、結局厳密一致と同じ。
+// 整数比較なら誤差ゼロで 1707×960 を確実に除外し、整数倍(k×690 × k×1227)は
+// 自動的に拾える。
 const (
-	targetRatio = 409.0 / 230.0
-	ratioTol    = 0.0003
+	ratioW = 230
+	ratioH = 409
 )
+
+// matchesRatio は long:short が厳密に 409:230 かを整数演算で判定する。
+func matchesRatio(long, short int) bool {
+	return short > 0 && long*ratioW == short*ratioH
+}
 
 // PokemonGOSnapshot は Pokémon GO の AR スナップショットを 3 つの必須ゲートで
 // 検出する: アスペクト比 ≈ 230:409、JPEG コンテナ、カメラ EXIF 不在。
@@ -47,10 +54,9 @@ func (PokemonGOSnapshot) Detect(m imagemeta.Meta) Result {
 	short := m.ShortSide()
 	gateRatio := false
 	if short > 0 {
-		ratio := float64(m.LongSide()) / float64(short)
-		gateRatio = math.Abs(ratio-targetRatio) <= ratioTol
+		gateRatio = matchesRatio(m.LongSide(), short)
 		if gateRatio {
-			reasons = append(reasons, "aspect ratio ≈ 230:409")
+			reasons = append(reasons, "aspect ratio == 230:409")
 		} else {
 			reasons = append(reasons, "aspect ratio mismatch")
 		}

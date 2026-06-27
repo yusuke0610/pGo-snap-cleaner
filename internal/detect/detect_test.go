@@ -40,6 +40,21 @@ func TestPokemonGOSnapshot(t *testing.T) {
 			want: false,
 		},
 		{
+			name: "誤検出していた 1707x960 (569:320, 比率は近いが厳密には非一致)",
+			m:    imagemeta.Meta{Width: 1707, Height: 960, Format: "jpeg"},
+			want: false,
+		},
+		{
+			name: "誤検出していた 960x1707 (縦向きでも除外)",
+			m:    imagemeta.Meta{Width: 960, Height: 1707, Format: "jpeg"},
+			want: false,
+		},
+		{
+			name: "整数倍の 3x スナップ 2070x3681 も拾う",
+			m:    imagemeta.Meta{Width: 2070, Height: 3681, Format: "jpeg"},
+			want: true,
+		},
+		{
 			name: "寸法がゼロ",
 			m:    imagemeta.Meta{Format: "jpeg"},
 			want: false,
