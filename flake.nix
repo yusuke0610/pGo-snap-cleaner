@@ -1,6 +1,6 @@
 {
-  # photo-clean — Pokémon GO の AR スナップショットに Finder タグ(pGo/赤)を付ける CLI
-  description = "photo-clean: Pokémon GO スナップショット判定 & Finder タグ付与 CLI";
+  # pGo-snap-cleaner — Pokémon GO の AR スナップショットに Finder タグ(pGo/赤)を付ける CLI
+  description = "pGo-snap-cleaner: Pokémon GO スナップショット判定 & Finder タグ付与 CLI";
 
   inputs = {
     # 安定版が欲しければ nixos-25.05 などに固定してもよい
@@ -31,7 +31,7 @@
 
           # シェル起動時に一度だけ走る。バージョンを表示するだけ。
           shellHook = ''
-            echo "photo-clean dev shell — $(go version)"
+            echo "pGo-snap-cleaner dev shell — $(go version)"
           '';
         };
       });
@@ -39,12 +39,12 @@
       # `nix build` で単一バイナリをビルドする
       packages = forAllSystems (pkgs: {
         default = pkgs.buildGoModule {
-          pname = "photo-clean";
+          pname = "pGo-snap-cleaner";
           version = "0.1.0";
           src = ./.;
 
           # ビルド対象のエントリポイント
-          subPackages = [ "cmd/photo-clean" ];
+          subPackages = [ "cmd/pGo-snap-cleaner" ];
 
           # 依存モジュールのハッシュ。go.mod / go.sum を変えたら
           # 一度 lib.fakeHash に戻してビルド→出力された正しい値に貼り替える。
@@ -52,7 +52,7 @@
 
           meta = {
             description = "Pokémon GO スナップショットに Finder タグ(pGo/赤)を付ける macOS CLI";
-            mainProgram = "photo-clean";
+            mainProgram = "pGo-snap-cleaner";
           };
         };
       });

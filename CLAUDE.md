@@ -15,7 +15,7 @@ macOS の Finder タグ `pGo`（赤）を付与するローカル専用 CLI。
 ## よく使うコマンド
 
 ```sh
-make build            # ビルド (./photo-clean)
+make build            # ビルド (./pGo-snap-cleaner)
 make test             # 全テスト
 make test-v           # 詳細表示でテスト
 go test ./internal/findertag/ -run TestRemovePGoPreservesOtherTags   # 単一テスト
@@ -47,7 +47,7 @@ scan.Walk → imagemeta.Extract → detect.Detect → decision.Classify → find
 - **internal/decision** — detector のスコアを confidence ラベル（high/low/none）に変換し、`ShouldTag()` で
   タグ付け可否を決める（full gate match かつ high のときだけタグ）。
 - **internal/findertag** — xattr の読み書き + バイナリ plist のエンコード/デコード。
-- **cmd/photo-clean** — Cobra の各サブコマンド。各コマンドは上記を組み合わせるだけの薄い層。
+- **cmd/pGo-snap-cleaner** — Cobra の各サブコマンド。各コマンドは上記を組み合わせるだけの薄い層。
 
 ### 判定ロジック（最重要・実データで確定済み）
 

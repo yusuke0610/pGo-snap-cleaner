@@ -1,7 +1,7 @@
-# photo-clean 開発・実行用 Makefile
+# pGo-snap-cleaner 開発・実行用 Makefile
 #
 # よく使うコマンド:
-#   make build         バイナリをビルド (./photo-clean)
+#   make build         バイナリをビルド (./pGo-snap-cleaner)
 #   make test          テスト実行
 #   make scan DIR=...  指定ディレクトリを走査（変更なし）
 #   make tag   DIR=... pGo(赤)タグを付与
@@ -11,8 +11,8 @@
 #   DIR : 対象ディレクトリ（必須）
 #   REC : 1 を指定するとサブディレクトリも再帰（-r）
 
-BINARY := photo-clean
-PKG    := ./cmd/photo-clean
+BINARY := pGo-snap-cleaner
+PKG    := ./cmd/pGo-snap-cleaner
 DIR    ?=
 REC    ?=
 
@@ -24,10 +24,10 @@ RFLAG := $(if $(filter 1,$(REC)),-r,)
 ## help: このヘルプを表示
 .PHONY: help
 help:
-	@echo "photo-clean — make ターゲット一覧:"
+	@echo "pGo-snap-cleaner — make ターゲット一覧:"
 	@grep -E '^## ' $(MAKEFILE_LIST) | sed 's/## //'
 
-## build: バイナリをビルド (./photo-clean)
+## build: バイナリをビルド (./pGo-snap-cleaner)
 .PHONY: build
 build:
 	go build -o $(BINARY) $(PKG)
@@ -77,7 +77,7 @@ tag: build guard-DIR
 untag: build guard-DIR
 	./$(BINARY) untag $(RFLAG) $(DIR)
 
-## nix-build: Nix で再現ビルド (./result/bin/photo-clean)
+## nix-build: Nix で再現ビルド (./result/bin/pGo-snap-cleaner)
 .PHONY: nix-build
 nix-build:
 	nix build .#default

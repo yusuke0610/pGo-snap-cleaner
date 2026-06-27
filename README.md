@@ -1,4 +1,4 @@
-# photo-clean
+# pGo-snap-cleaner
 
 iPhone の写真ライブラリに紛れ込む **Pokémon GO の AR スナップショット**を自動判定し、
 macOS の Finder タグ **`pGo`（赤）** を付与するローカル専用 CLI です。
@@ -20,24 +20,64 @@ macOS 専用 / pure Go（CGo 不要）/ 単一バイナリ。
 precision（誤爆ゼロ）最優先の設計です。実写真を絶対にタグ付けしないことを目標にしています。
 ピクセルはデコードせず、ヘッダと EXIF だけを読みます。
 
-## インストール / ビルド
+## 実行方法
+
+恒久インストールは不要です。グローバル環境を汚さず、使い終わったら破棄できる
+3 つの実行方法を用意しています（macOS 専用）。
+
+### 1. バイナリをダウンロードして実行（Go も Nix も不要）
+
+[Releases](https://github.com/yusuke0610/pGo-snap-cleaner/releases) から
+`pGo-snap-cleaner_*_darwin_all.tar.gz`（Intel / Apple Silicon 共通のユニバーサルバイナリ）を取得します。
+
+```sh
+tar xzf pGo-snap-cleaner_*_darwin_all.tar.gz
+xattr -d com.apple.quarantine ./pGo-snap-cleaner   # 初回のみ（未署名のため Gatekeeper 対策）
+./pGo-snap-cleaner scan ~/Pictures
+rm ./pGo-snap-cleaner                               # 不要になったら削除するだけ
+```
+
+> このバイナリは Apple の署名/公証をしていないため、ダウンロード直後は Gatekeeper に
+> ブロックされます。上記 `xattr -d com.apple.quarantine` を一度実行するか、Finder で
+> 右クリック →「開く」で許可してください。次の `nix run` / `go run` はローカルで
+> ビルドするためこの隔離は発生しません。
+
+### 2. `nix run`（プロファイルを汚さず実行）
+
+Nix があれば、クローンもインストールも不要でそのまま実行できます。
+
+```sh
+nix run github:yusuke0610/pGo-snap-cleaner -- scan ~/Pictures
+```
+
+nix store 上で実行され、プロファイルには何も追加されません（後で `nix store gc` で回収）。
+
+### 3. `go run`（Go ユーザー向け）
+
+```sh
+go run github.com/yusuke0610/pGo-snap-cleaner/cmd/pGo-snap-cleaner@latest scan ~/Pictures
+```
+
+PATH には何もインストールされず、ビルドキャッシュ上で実行されます（`go clean -cache` で破棄）。
+
+### ソースからビルドする場合
 
 Go 1.23 以上が必要です。
 
 ```sh
-go build -o photo-clean ./cmd/photo-clean
+go build -o pGo-snap-cleaner ./cmd/pGo-snap-cleaner
 # または
 make build
 ```
 
-Nix を使う場合は後述の「開発環境（Nix + direnv）」を参照してください。
+Nix での再現ビルドは後述の「開発環境（Nix + direnv）」を参照してください。
 
 ## 使い方
 
 ```sh
-photo-clean scan  <dir>   # 走査して判定件数を表示（変更なし＝dry-run）
-photo-clean tag   <dir>   # 判定が pokemon のファイルに pGo(赤)タグを付与（冪等）
-photo-clean untag <dir>   # pGo(赤)タグだけを除去（やり直し・救済用）
+pGo-snap-cleaner scan  <dir>   # 走査して判定件数を表示（変更なし＝dry-run）
+pGo-snap-cleaner tag   <dir>   # 判定が pokemon のファイルに pGo(赤)タグを付与（冪等）
+pGo-snap-cleaner untag <dir>   # pGo(赤)タグだけを除去（やり直し・救済用）
 ```
 
 - `-r` / `--recursive` でサブディレクトリも再帰的に走査します（デフォルトは非再帰）。
@@ -66,7 +106,7 @@ make help    # ターゲット一覧
 
 ```sh
 nix develop          # dev shell に入る
-nix build .#default  # 再現ビルド（./result/bin/photo-clean）
+nix build .#default  # 再現ビルド（./result/bin/pGo-snap-cleaner）
 ```
 
 direnv を使うと、このディレクトリに `cd` するだけで dev shell が自動で有効化されます。

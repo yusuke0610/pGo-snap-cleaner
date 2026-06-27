@@ -4,7 +4,7 @@
 package detect
 
 import (
-	"github.com/wadayusuke/photo-clean/internal/imagemeta"
+	"github.com/yusuke0610/pGo-snap-cleaner/internal/imagemeta"
 )
 
 // Result は 1 枚の画像に対する検出器の判定結果。

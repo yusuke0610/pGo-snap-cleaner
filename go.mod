@@ -1,4 +1,4 @@
-module github.com/wadayusuke/photo-clean
+module github.com/yusuke0610/pGo-snap-cleaner
 
 go 1.23
 

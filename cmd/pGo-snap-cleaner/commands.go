@@ -5,16 +5,17 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/wadayusuke/photo-clean/internal/decision"
-	"github.com/wadayusuke/photo-clean/internal/findertag"
-	"github.com/wadayusuke/photo-clean/internal/scan"
+	"github.com/yusuke0610/pGo-snap-cleaner/internal/decision"
+	"github.com/yusuke0610/pGo-snap-cleaner/internal/findertag"
+	"github.com/yusuke0610/pGo-snap-cleaner/internal/scan"
 )
 
 func newRootCmd() *cobra.Command {
 	root := &cobra.Command{
-		Use:   "photo-clean",
-		Short: "Tag Pokémon GO AR snapshots with the Finder tag pGo (red)",
-		Long: "photo-clean scans a photo library for Pokémon GO AR snapshots and " +
+		Use:     "pGo-snap-cleaner",
+		Version: version,
+		Short:   "Tag Pokémon GO AR snapshots with the Finder tag pGo (red)",
+		Long: "pGo-snap-cleaner scans a photo library for Pokémon GO AR snapshots and " +
 			"marks them with the Finder tag \"pGo\" (red).\n" +
 			"It never deletes files — you review the red tag in Finder and delete manually.",
 		SilenceUsage:  true,

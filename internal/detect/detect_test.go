@@ -3,7 +3,7 @@ package detect
 import (
 	"testing"
 
-	"github.com/wadayusuke/photo-clean/internal/imagemeta"
+	"github.com/yusuke0610/pGo-snap-cleaner/internal/imagemeta"
 )
 
 func TestPokemonGOSnapshot(t *testing.T) {

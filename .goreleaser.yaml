@@ -1,0 +1,52 @@
+# GoReleaser 設定 — pGo-snap-cleaner
+# macOS 専用・pure Go・単一バイナリ。darwin の amd64/arm64 をビルドし、
+# ユニバーサルバイナリ1本にまとめて tar.gz で配布する。
+#
+# ローカル試走:   goreleaser release --snapshot --clean
+# 本番リリース:   vX.Y.Z タグを push（.github/workflows/release.yml が実行）
+version: 2
+
+# project_name は未設定で OK（リポジトリ名 pGo-snap-cleaner が使われる）。
+# 成果物名・バイナリ名・ユニバーサルバイナリ名すべてに反映される。
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: pGo-snap-cleaner
+    main: ./cmd/pGo-snap-cleaner
+    binary: pGo-snap-cleaner
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w -X main.version={{ .Version }}
+
+# amd64/arm64 を1つの universal バイナリ（*_darwin_all）に統合する
+universal_binaries:
+  - id: pGo-snap-cleaner
+    replace: true
+
+archives:
+  - id: pGo-snap-cleaner
+    formats: [tar.gz]
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - README.md
+      - LICENSE
+
+checksum:
+  name_template: "checksums.txt"
+
+release:
+  github:
+    owner: yusuke0610
+    name: pGo-snap-cleaner
+
+changelog:
+  use: github

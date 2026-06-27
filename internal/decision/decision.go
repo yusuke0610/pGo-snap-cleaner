@@ -3,8 +3,8 @@
 package decision
 
 import (
-	"github.com/wadayusuke/photo-clean/internal/detect"
-	"github.com/wadayusuke/photo-clean/internal/imagemeta"
+	"github.com/yusuke0610/pGo-snap-cleaner/internal/detect"
+	"github.com/yusuke0610/pGo-snap-cleaner/internal/imagemeta"
 )
 
 // Confidence は判定結果の粗いラベル。
