@@ -1,0 +1,7 @@
+/photo-clean
+/dist/
+*.test
+
+# direnv / nix-direnv のローカルキャッシュ
+/.direnv/
+/result
